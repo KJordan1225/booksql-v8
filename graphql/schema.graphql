@@ -21,7 +21,7 @@ type Query {
     books: [Book] @all
     book(id: ID @eq): Book @find
     booksByFeatured(featured: Boolean! @eq): [Book] @all
-    someComplexQuery(search: String!): [Book]
+    # someComplexQuery(search: String!): [Book]
 
     categories: [Category] @all
     category(id: ID @eq): Category @find
