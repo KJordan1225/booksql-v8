@@ -10,26 +10,90 @@
           name
         }
       }
-      `"
-      :variables="{ id, name }"
+      `"     
     >
-      <template v-slot="{ result: { loading, error, data } }">
+      <template v-slot="{ result: { error, data }, isLoading }">
         <!-- Loading -->
-        <div v-if="loading" class="loading apollo">Loading...</div>
+        <div v-if="isLoading" class="loading apollo">Loading...</div>
 
         <!-- Error -->
         <div v-else-if="error" class="error apollo">An error occurred</div>
 
         <!-- Result -->
         <div v-else-if="data" class="category" >
-          <ul>
-            <li v-for="category in categories" :key="category.id" class="category">
-              {{ category.id }} {{ category.name }}
-            </li>
-          </ul>
+          
+            <a href="#" v-for="category in data.categories" :key="category.id" class="link-margin">
+              {{ category.id }}. {{ category.name }}
+            </a>
+          
         </div>
         <!-- No result -->
-        <div v-else class="no-result apollo">No result :(</div>
+        <div v-else class="no-result apollo">No result :( </div>
+      </template>
+    </ApolloQuery>
+
+    <!-- <ApolloQuery
+      :query="gql => gql`
+        query {
+          books {
+            id
+            title
+            author
+            image
+          }
+      }
+      `"     
+    >
+      <template v-slot="{ result: { error, data }, isLoading }">
+        <div v-if="isLoading" class="loading apollo">Loading...</div>
+
+       
+        <div v-else-if="error" class="error apollo">An error occurred</div>
+
+        
+        <div v-else-if="data">
+          <div v-for="book in data.books" :key="book.id">
+            {{ book.id }}. {{ book.title }}
+          </div>
+        </div>
+        
+        <div v-else class="no-result apollo">No result :( </div>
+      </template>
+    </ApolloQuery> -->
+
+    <ApolloQuery
+      :query="gql => gql`
+        query ($id: ID!) {
+          category (id: $id) {
+            id
+            name
+            books {
+              id
+              title
+              author
+              image
+            }
+          }
+      }      
+      
+      `"    
+      :variables="{ id: 1 }" 
+    >
+      <template v-slot="{ result: { error, data }, isLoading }">
+        <!-- Loading -->
+        <div v-if="isLoading" class="loading apollo">Loading...</div>
+
+        <!-- Error -->
+        <div v-else-if="error" class="error apollo">An error occurred</div>
+
+        <!-- Result -->
+        <div v-else-if="data">
+          <div v-for="book in data.category.books" :key="book.id">
+            {{ book.id }}. {{ book.title }}
+          </div>
+        </div>
+        <!-- No result -->
+        <div v-else class="no-result apollo">No result :( </div>
       </template>
     </ApolloQuery>
   </div>
@@ -60,3 +124,9 @@ export default {
   }
 }
 </script>
+
+<style>
+.link-margin {
+  margin-right: 24px;
+}
+</style>
