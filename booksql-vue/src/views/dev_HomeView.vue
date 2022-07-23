@@ -4,7 +4,7 @@
     <HelloWorld msg="Welcome to Your Vue.js App"/> --> 
     <ApolloQuery
       :query="gql => gql`
-        query {
+        query categoriesQuery {
         categories {
           id
           name
@@ -34,9 +34,9 @@
       </template>
     </ApolloQuery>
 
-    <!-- <ApolloQuery
+    <ApolloQuery
       :query="gql => gql`
-        query {
+        query booksQuery {
           books {
             id
             title
@@ -57,11 +57,11 @@
         
         <div v-else class="no-result apollo">No result :( </div>
       </template>
-    </ApolloQuery> -->
+    </ApolloQuery>
 
     <ApolloQuery
       :query="gql => gql`
-        query ($id: ID!) {
+        query categoryQuery ($id: ID!) {
           category (id: $id) {
             id
             name
@@ -74,7 +74,7 @@
           }
       }      
       
-      `"    
+      `"   
       :variables="{ id: selectedCategory }" 
     >
       <template v-slot="{ result: { error, data }, isLoading }">
@@ -96,39 +96,41 @@
 // @ is an alias to /src
 // import HelloWorld from '@/components/HelloWorld.vue'
 import gql from 'graphql-tag'
-// import categoryQuery from '@/graphql/queries/Category.gql'
-// import booksQuery from '@/graphql/queries/Books.gql'
-// import categoryQuery from '@/graphql/queries/Category.gql'
+import categoryQuery from '@/graphql/queries/Category.gql'
+import booksQuery from '@/graphql/queries/Books.gql'
 
 export default {
   name: 'HomeView',
   data() {
     return {
-      // categoryQuery,
-      // query: booksQuery,
+      categoryQuery,
+      booksQuery,
+      categoriesQuery,
+      query: booksQuery,
       selectedCategory: 1,
       categories: []
     }
   },
-  apollo: {
-    categories: gql`query {
-      categories {
-        id
-        name
-      }
-    }`, 
-  },
+  // apollo: {
+  //   categories: gql`query {
+  //     categories {
+  //       id
+  //       name
+  //     }
+  //   }`,
+  // },
   methods: {
     selectCategory(category) {
-      // if (category === 'all') {
-      //   this.query = booksQuery
-      // } else if (category === 'featured') {
-      //   this.query = booksFeatuedQuery
-      // } else {
-      //   this.query = categoryQuery
-      // }
+      if (category === 'all') {
+        // this.query = booksQuery
+        this.query = categoryQuery
+      } else if (category === 'featured') {
+        // this.query = booksFeatuedQuery
+        this.query = categoryQuery
+      } else {
 
-      this.selectedCategory = category
+        this.query = categoryQuery
+      }
       
     }
   },
