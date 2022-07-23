@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <router-link to="/books/add">Add a Book</router-link>
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> --> 
     <ApolloQuery
