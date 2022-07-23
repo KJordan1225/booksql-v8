@@ -22,7 +22,7 @@
         <!-- Result -->
         <div v-else-if="data" class="category" >
             <a href="#" class="link-margin" @click="selectCategory('all')">All</a>
-            <a href="#" class="link-margin" @click="selectCategory('featured')">Featured</a>
+            <!-- <a href="#" class="link-margin" @click="selectCategory('featured')">Featured</a> -->
             <a href="#" v-for="category in data.categories" 
               :key="category.id" @click.prevent="selectCategory(category.id)" class="link-margin">
               {{ category.id }}. {{ category.name }}
@@ -43,7 +43,9 @@
             <div v-for="book in data.books" :key="book.id">
               <router-link :to="`/books/${book.id}`">
                 {{ book.id }}. {{ book.title }}
-              </router-link>              
+              </router-link>
+              <div>{{ book.author }}</div>
+              <img :src="`${book.image}`" alt="cover image" />            
             </div>
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
@@ -61,6 +63,8 @@
               <router-link :to="`/books/${book.id}`">
                 {{ book.id }}. {{ book.title }}
               </router-link>
+              <div>{{ book.author }}</div>
+              <img :src="`${book.image}`" alt="cover image" />  
             </div>
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
@@ -73,11 +77,13 @@
         <template v-slot="{ result: { error, data }, isLoading }">
           <div v-if="isLoading" class="loading apollo">Loading...</div>
           <div v-else-if="error" class="error apollo">An error occurred</div>
-          <div v-else-if="data">
+          <div v-else-if="data.category">
             <div v-for="book in data.category.books" :key="book.id">
               <router-link :to="`/books/${book.id}`">
                 {{ book.id }}. {{ book.title }}
               </router-link>
+              <div>{{ book.author }}</div>
+              <img :src="`${book.image}`" alt="cover image" />  
             </div>
           </div>
           <div v-else class="no-result apollo">No result :( </div>
@@ -121,15 +127,15 @@ const categoryQuery = gql`
           }
       }`
 
-    const booksFeaturedQuery = gql`
-      query {
-        booksByFeatured(featured: true) {
-          id
-          title
-          author
-          image
-        }
-      }`
+    // const booksFeaturedQuery = gql`
+    //   query {
+    //     booksByFeatured(featured: true) {
+    //       id
+    //       title
+    //       author
+    //       image
+    //     }
+    //   }`
 
 export default {
   name: 'HomeView',
@@ -137,7 +143,7 @@ export default {
     return {
       categoryQuery,
       booksQuery,
-      booksFeaturedQuery,      
+      // booksFeaturedQuery,      
       query: categoryQuery,
       selectedCategory: 'all',
       categories: []
@@ -149,19 +155,17 @@ export default {
       if (category === 'all') {
         this.query = booksQuery
         this.selectedCategory = 'all'
-      } else if (category === 'featured') {
-        this.query = booksFeaturedQuery
-        // this.selectedCategory = 'featured'
+      // } else if (category === 'featured') {
+      //   this.query = booksFeaturedQuery
+      //   this.selectedCategory = 'featured'
       } else {
         this.query = categoryQuery
         this.selectedCategory = category
-      }
-      
+      }      
         // this.selectedCategory = category
-      
-      
     }
   },
+  
   components: {
     // HelloWorld
   }
