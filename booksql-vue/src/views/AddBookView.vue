@@ -29,7 +29,7 @@
         <ApolloQuery :query="categoriesQuery">
           <template slot-scope="{ result: { data }, isLoading }">
             <div v-if="isLoading">Loading...</div>
-            <select v-else v-model="category">
+            <select v-else v-model="category_id">
               <option v-for="category of data.categories" :key="category.id" :value="category.id">
                 {{ category.name }}
               </option>
@@ -58,7 +58,7 @@ const addBook = gql`
             $link: String
             $description: String
             $featured: Boolean
-            $category: Int!
+            $category_id: Int!
             ) {
             createBook(
                 title: $title
@@ -67,7 +67,7 @@ const addBook = gql`
                 link: $link
                 description: $description
                 featured: $featured
-                category: $category
+                category_id: $category_id
             ) {
                 id
                 title
@@ -92,11 +92,11 @@ export default {
       description: '',
       link: '',
       featured: false,
-      category: 1
+      category_id: 1
     }
   },
-  methods: {
-    addBook() {
+  methods: {    
+    addBook() {       
       this.$apollo.mutate({
         // Query
         mutation: addBook,
@@ -108,7 +108,7 @@ export default {
           link: this.link,
           description: this.description,
           featured: this.featured,
-          category: this.category
+          category_id: parseInt(this.category_id)
         }
       }).then((data) => {
         console.log(data)
@@ -116,6 +116,7 @@ export default {
       }).catch((error) => {
         console.error(error)
       })
+      alert('Book should be added') 
     }
   }
 }
