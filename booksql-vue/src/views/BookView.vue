@@ -10,7 +10,7 @@
             <img :src="`${data.book.image}`" alt="cover image" />
             <div>
               <router-link :to="`/books/${data.book.id}/edit`" href="#" class="link-margin">Edit</router-link>
-              <a href="#" class="link-margin">Delete</a>
+              <a href="#" class="link-margin" @click.prevent="deleteBook">Delete</a>
             </div>            
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
@@ -47,23 +47,30 @@ const categoryQuery = gql`
           }
       }`
 
-      const bookQuery = gql`
+  const bookQuery = gql`
        query($id: ID!) {
             book(id: $id) {
                 id
                 title
                 author
                 image
-                    description
+                description
                 link
                 featured
                 category{
-                    id
+                id
                 name
                 } 
             }
-        }`
-    
+        }`  
+
+    const deleteThisBook = gql`
+       mutation($id: ID!) {
+        deleteBook(id: $id) {
+          id
+          title
+        }
+      }`    
 
 export default {
   name: 'HomeView',
@@ -71,7 +78,8 @@ export default {
     return {
       categoryQuery,
       booksQuery,
-      bookQuery,      
+      bookQuery, 
+      deleteThisBook,     
       query: categoryQuery,
       selectedCategory: 'all',
       categories: []
@@ -87,9 +95,20 @@ export default {
         this.query = categoryQuery
         this.selectedCategory = category
       }    
-    }
-  },
- 
+    },
+
+    deleteBook() {
+      this.$apollo.mutate({
+        mutation: deleteThisBook,
+        variables: {
+          id: this.$route.params.id,
+        }
+      }).then(data => {
+        console.log(data)
+        this.$router.push('/')
+      })
+    }, 
+  },  
 }
 </script>
 
