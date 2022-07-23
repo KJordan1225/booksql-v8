@@ -41,7 +41,9 @@
           <div v-else-if="error" class="error apollo">An error occurred</div>        
           <div v-else-if="data">
             <div v-for="book in data.books" :key="book.id">
-              {{ book.id }}. {{ book.title }}
+              <router-link :to="`/books/${book.id}`">
+                {{ book.id }}. {{ book.title }}
+              </router-link>              
             </div>
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
@@ -56,7 +58,9 @@
           <div v-else-if="error" class="error apollo">An error occurred</div>        
           <div v-else-if="data">
             <div v-for="book in data.booksByFeatured" :key="book.id">
-              {{ book.id }}. {{ book.title }}
+              <router-link :to="`/books/${book.id}`">
+                {{ book.id }}. {{ book.title }}
+              </router-link>
             </div>
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
@@ -71,7 +75,9 @@
           <div v-else-if="error" class="error apollo">An error occurred</div>
           <div v-else-if="data">
             <div v-for="book in data.category.books" :key="book.id">
-              {{ book.id }}. {{ book.title }}
+              <router-link :to="`/books/${book.id}`">
+                {{ book.id }}. {{ book.title }}
+              </router-link>
             </div>
           </div>
           <div v-else class="no-result apollo">No result :( </div>
@@ -145,7 +151,7 @@ export default {
         this.selectedCategory = 'all'
       } else if (category === 'featured') {
         this.query = booksFeaturedQuery
-        this.selectedCategory = 'featured'
+        // this.selectedCategory = 'featured'
       } else {
         this.query = categoryQuery
         this.selectedCategory = category
