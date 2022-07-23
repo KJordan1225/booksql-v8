@@ -1,7 +1,7 @@
 <template>
   <div class="create container mt-12">
-    <h1 class="mb-4">Create Book</h1>
-    <form action="#" method="POST" @submit.prevent="addBook">
+    <h1 class="mb-4">Edit Book</h1>
+    <form action="#" method="POST" @submit.prevent="editBook">
       <div class="form-group">
         <label class="font-bold mb-2" for="title">Title</label>
         <input type="text" name="title" id="title" v-model="title">
@@ -39,7 +39,7 @@
       </div>
 
       <div class="form-group">
-        <button type="submit">Add book</button>
+        <button type="submit">Update book</button>
       </div>
 
     </form>
@@ -50,28 +50,30 @@
 // import addBook from '@/graphql/mutations/AddBook.gql'
 import gql from 'graphql-tag'
 
-const addBook = gql`
+const updateBook = gql`
         mutation(
-            $title: String!
-            $author: String!
-            $image: String
-            $link: String
-            $description: String
-            $featured: Boolean
-            $category_id: Int!
-            ) {
-            createBook(
-                title: $title
-                author: $author
-                image: $image
-                link: $link
-                description: $description
-                featured: $featured
-                category_id: $category_id
-            ) {
-                id
-                title
-            }
+          $id: ID!
+          $title: String!
+          $author: String!
+          $image: String
+          $link: String
+          $description: String
+          $featured: Boolean
+          $category_id: Int!
+        ) {
+          updateBook(
+            id: $id
+            title: $title
+            author: $author
+            image: $image
+            link: $link
+            description: $description
+            featured: $featured
+            category_id: $category_id
+          ) {
+            id
+            title
+          }
         }` 
 
     const categoriesQuery = gql`
@@ -82,10 +84,28 @@ const addBook = gql`
             }
             }`
 
+    const bookQuery = gql`
+       query($id: ID!) {
+            book(id: $id) {
+                id
+                title
+                author
+                image
+                    description
+                link
+                featured
+                category{
+                    id
+                name
+                } 
+            }
+        }`
+
 export default {
   data() {
     return {
-    categoriesQuery,
+      categoriesQuery,
+      bookQuery,
       title: '',
       author: '',
       image: '',
@@ -96,12 +116,13 @@ export default {
     }
   },
   methods: {    
-    addBook() {       
+    editBook() {       
       this.$apollo.mutate({
         // Query
-        mutation: addBook,
+        mutation: updateBook,
         // Parameters
         variables: {
+          id: this.$route.params.id,
           title: this.title,
           author: this.author,
           image: this.image,
@@ -112,7 +133,7 @@ export default {
         }
       }).then((data) => {
         console.log(data)
-        this.$router.push('/')
+        this.$router.push(`/books/${this.$route.params.id}`)
       }).catch((error) => {
         console.error(error)
       })

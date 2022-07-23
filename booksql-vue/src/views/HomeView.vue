@@ -173,7 +173,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .link-margin {
   margin-right: 24px;
 }

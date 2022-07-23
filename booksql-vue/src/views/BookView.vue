@@ -7,7 +7,11 @@
           <div v-else-if="data">
             <div>{{ data.book.title }}</div>
             <div>{{ data.book.author }}</div>
-            <img :src="`${data.book.image}`" alt="cover image" />            
+            <img :src="`${data.book.image}`" alt="cover image" />
+            <div>
+              <router-link :to="`/books/${data.book.id}/edit`" href="#" class="link-margin">Edit</router-link>
+              <a href="#" class="link-margin">Delete</a>
+            </div>            
           </div>        
           <div v-else class="no-result apollo">No result :( </div>
         </template>
@@ -17,11 +21,7 @@
 
 <script>
 // @ is an alias to /src
-// import HelloWorld from '@/components/HelloWorld.vue'
 import gql from 'graphql-tag'
-// import categoryQuery from '@/graphql/queries/Category.gql'
-// import booksQuery from '@/graphql/queries/Books.gql'
-// import categoryQuery from '@/graphql/queries/Category.gql'
 
 const categoryQuery = gql`
         query ($id: ID!) {
@@ -83,22 +83,21 @@ export default {
       if (category === 'all') {
         this.query = booksQuery
         this.selectedCategory = 'all'
-      // } else if (category === 'featured') {
-      //   this.query = booksFeaturedQuery
-      //   this.selectedCategory = 'featured'
       } else {
         this.query = categoryQuery
         this.selectedCategory = category
-      }      
-        // this.selectedCategory = category
+      }    
     }
   },
-  
-  components: {
-    // HelloWorld
-  }
+ 
 }
 </script>
+
+<style scoped>
+.link-margin {
+  margin-right: 24px;
+}
+</style>
 
 
 
