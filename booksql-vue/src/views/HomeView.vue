@@ -48,6 +48,21 @@
         </template>
       </ApolloQuery>
     </div>
+
+    <div v-else-if="selectedCategory === 'featured'">
+      <ApolloQuery :query="booksFeaturedQuery" :variables="{featured: true}">
+        <template v-slot="{ result: { error, data }, isLoading }">
+          <div v-if="isLoading" class="loading apollo">Loading...</div>       
+          <div v-else-if="error" class="error apollo">An error occurred</div>        
+          <div v-else-if="data">
+            <div v-for="book in data.booksByFeatured" :key="book.id">
+              {{ book.id }}. {{ book.title }}
+            </div>
+          </div>        
+          <div v-else class="no-result apollo">No result :( </div>
+        </template>
+      </ApolloQuery>
+    </div>
     
     <div v-else>
       <ApolloQuery :query="query" :variables="{ id: selectedCategory }">
@@ -100,12 +115,23 @@ const categoryQuery = gql`
           }
       }`
 
+    const booksFeaturedQuery = gql`
+      query {
+        booksByFeatured(featured: true) {
+          id
+          title
+          author
+          image
+        }
+      }`
+
 export default {
   name: 'HomeView',
   data() {
     return {
       categoryQuery,
-      booksQuery,      
+      booksQuery,
+      booksFeaturedQuery,      
       query: categoryQuery,
       selectedCategory: 'all',
       categories: []
@@ -117,11 +143,12 @@ export default {
       if (category === 'all') {
         this.query = booksQuery
         this.selectedCategory = 'all'
-      // } else if (category === 'featured') {
-      //   this.query = booksFeatuedQuery
+      } else if (category === 'featured') {
+        this.query = booksFeaturedQuery
+        this.selectedCategory = 'featured'
       } else {
-        this.query = categoryQuery;
-        this.selectedCategory = category;
+        this.query = categoryQuery
+        this.selectedCategory = category
       }
       
         // this.selectedCategory = category
