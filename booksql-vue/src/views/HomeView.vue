@@ -21,8 +21,8 @@
 
         <!-- Result -->
         <div v-else-if="data" class="category" >
-            <a href="#" class="link-margin">All</a>
-            <a href="#" class="link-margin">Featured</a>
+            <a href="#" class="link-margin" @click="selectCategory('all')">All</a>
+            <a href="#" class="link-margin" @click="selectCategory('featured')">Featured</a>
             <a href="#" v-for="category in data.categories" 
               :key="category.id" @click.prevent="selectCategory(category.id)" class="link-margin">
               {{ category.id }}. {{ category.name }}
@@ -34,60 +34,36 @@
       </template>
     </ApolloQuery>
 
-    <!-- <ApolloQuery
-      :query="gql => gql`
-        query {
-          books {
-            id
-            title
-            author
-            image
-          }
-      }
-      `"     
-    >
-      <template v-slot="{ result: { error, data }, isLoading }">
-        <div v-if="isLoading" class="loading apollo">Loading...</div>       
-        <div v-else-if="error" class="error apollo">An error occurred</div>        
-        <div v-else-if="data">
-          <div v-for="book in data.books" :key="book.id">
-            {{ book.id }}. {{ book.title }}
+    <div v-if="selectedCategory === 'all'">
+      <ApolloQuery :query="booksQuery">
+        <template v-slot="{ result: { error, data }, isLoading }">
+          <div v-if="isLoading" class="loading apollo">Loading...</div>       
+          <div v-else-if="error" class="error apollo">An error occurred</div>        
+          <div v-else-if="data">
+            <div v-for="book in data.books" :key="book.id">
+              {{ book.id }}. {{ book.title }}
+            </div>
+          </div>        
+          <div v-else class="no-result apollo">No result :( </div>
+        </template>
+      </ApolloQuery>
+    </div>
+    
+    <div v-else>
+      <ApolloQuery :query="query" :variables="{ id: selectedCategory }">
+        <template v-slot="{ result: { error, data }, isLoading }">
+          <div v-if="isLoading" class="loading apollo">Loading...</div>
+          <div v-else-if="error" class="error apollo">An error occurred</div>
+          <div v-else-if="data">
+            <div v-for="book in data.category.books" :key="book.id">
+              {{ book.id }}. {{ book.title }}
+            </div>
           </div>
-        </div>
-        
-        <div v-else class="no-result apollo">No result :( </div>
-      </template>
-    </ApolloQuery> -->
-
-    <ApolloQuery
-      :query="gql => gql`
-        query ($id: ID!) {
-          category (id: $id) {
-            id
-            name
-            books {
-              id
-              title
-              author
-              image
-            }
-          }
-      }      
-      
-      `"    
-      :variables="{ id: selectedCategory }" 
-    >
-      <template v-slot="{ result: { error, data }, isLoading }">
-        <div v-if="isLoading" class="loading apollo">Loading...</div>
-        <div v-else-if="error" class="error apollo">An error occurred</div>
-        <div v-else-if="data">
-          <div v-for="book in data.category.books" :key="book.id">
-            {{ book.id }}. {{ book.title }}
-          </div>
-        </div>
-        <div v-else class="no-result apollo">No result :( </div>
-      </template>
-    </ApolloQuery>
+          <div v-else class="no-result apollo">No result :( </div>
+        </template>
+      </ApolloQuery>
+    </div>
+    
 
   </div>
 </template>
@@ -100,35 +76,56 @@ import gql from 'graphql-tag'
 // import booksQuery from '@/graphql/queries/Books.gql'
 // import categoryQuery from '@/graphql/queries/Category.gql'
 
+const categoryQuery = gql`
+        query ($id: ID!) {
+          category (id: $id) {
+            id
+            name
+            books {
+              id
+              title
+              author
+              image
+            }
+          }
+      }`       
+
+  const booksQuery = gql`
+        query {
+          books {
+            id
+            title
+            author
+            image
+          }
+      }`
+
 export default {
   name: 'HomeView',
   data() {
     return {
-      // categoryQuery,
-      // query: booksQuery,
-      selectedCategory: 1,
+      categoryQuery,
+      booksQuery,      
+      query: categoryQuery,
+      selectedCategory: 'all',
       categories: []
     }
-  },
-  apollo: {
-    categories: gql`query {
-      categories {
-        id
-        name
-      }
-    }`, 
-  },
+  },   
+
   methods: {
     selectCategory(category) {
-      // if (category === 'all') {
-      //   this.query = booksQuery
+      if (category === 'all') {
+        this.query = booksQuery
+        this.selectedCategory = 'all'
       // } else if (category === 'featured') {
       //   this.query = booksFeatuedQuery
-      // } else {
-      //   this.query = categoryQuery
-      // }
-
-      this.selectedCategory = category
+      } else {
+        this.query = categoryQuery;
+        this.selectedCategory = category;
+      }
+      
+        // this.selectedCategory = category
+      
       
     }
   },
