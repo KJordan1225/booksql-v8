@@ -48,6 +48,7 @@
 
 <script>
 // import addBook from '@/graphql/mutations/AddBook.gql'
+// import { thisTypeAnnotation } from '@babel/types'
 import gql from 'graphql-tag'
 
 const updateBook = gql`
@@ -91,7 +92,7 @@ const updateBook = gql`
                 title
                 author
                 image
-                    description
+                description
                 link
                 featured
                 category{
@@ -112,8 +113,35 @@ export default {
       description: '',
       link: '',
       featured: false,
-      category_id: 1
+      category_id: 1,
+      book: null,
     }
+  },
+  apollo: {
+    // Advanced query with parameters
+    // The 'variables' method is watched by vue
+    book: {
+      query: bookQuery,
+      // Reactive parameters
+      variables () {
+        if (this.$route && this.$route.params){
+          return {
+           id: this.$route.params.id,
+          }
+        }     
+      },
+      
+      // Optional result hook
+      result ({ data }) {
+        this.title = data.book.title
+        this.author = data.book.author
+        this.image = data.book.image
+        this.description = data.book.description
+        this.link = data.book.link
+        this.featured = data.book.featured
+        this.category_id = data.book.category.id
+      },      
+    },
   },
   methods: {    
     editBook() {       
