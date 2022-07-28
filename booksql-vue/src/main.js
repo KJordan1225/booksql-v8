@@ -6,6 +6,9 @@ import router from './router'
 import store from './store'
 import { createProvider } from './vue-apollo'
 
+import './index.css'
+// import './tailwind.css'
+
 Vue.config.productionTip = false
 
 new Vue({
