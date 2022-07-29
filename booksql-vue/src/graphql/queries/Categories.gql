@@ -1,6 +1,0 @@
-query {
-  categories {
-    id
-    name
-  }
-}
