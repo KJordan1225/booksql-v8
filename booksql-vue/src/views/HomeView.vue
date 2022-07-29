@@ -61,91 +61,67 @@
           
         </div>
         <div class="w-3/4 px-4 flex flex-wrap mb-12">
-          <div class="w-1/3 px-4 mb-12">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
-            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
-            Fugiat nam animi reprehenderit!
+          <div v-if="selectedCategory === 'all'">
+            <ApolloQuery :query="booksQuery">
+              <template v-slot="{ result: { error, data }, isLoading }">
+                <div v-if="isLoading" class="loading apollo">Loading...</div>       
+                <div v-else-if="error" class="error apollo">An error occurred</div>        
+                <div v-else-if="data" class="flex flex-wrap">
+                  <div v-for="book in data.books" :key="book.id" class="w-1/3 px-4 mb-12">              
+                    <img :src="`${book.image}`" alt="cover image" class="h-64 mb-2" />
+                    <router-link :to="`/books/${book.id}`" class="font-bold">
+                      {{ book.id }}. {{ book.title }}
+                    </router-link>
+                    <div>{{ book.author }}</div>            
+                  </div>
+                </div>        
+                <div v-else class="no-result apollo">No result :( </div>
+              </template>
+            </ApolloQuery>
           </div>
-          <div class="w-1/3 px-4 mb-12">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
-            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
-            Fugiat nam animi reprehenderit!
+
+          <div v-else-if="selectedCategory === 'featured'">
+            <ApolloQuery :query="booksFeaturedQuery" :variables="{featured: true}">
+              <template v-slot="{ result: { error, data }, isLoading }">
+                <div v-if="isLoading" class="loading apollo">Loading...</div>       
+                <div v-else-if="error" class="error apollo">An error occurred</div>        
+                <div v-else-if="data">
+                  <div v-for="book in data.booksByFeatured" :key="book.id">
+                    <router-link :to="`/books/${book.id}`">
+                      {{ book.id }}. {{ book.title }}
+                    </router-link>
+                    <div>{{ book.author }}</div>
+                    <img :src="`${book.image}`" alt="cover image" />  
+                  </div>
+                </div>        
+                <div v-else class="no-result apollo">No result :( </div>
+              </template>
+            </ApolloQuery>
           </div>
-          <div class="w-1/3 px-4 mb-12">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
-            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
-            Fugiat nam animi reprehenderit!
-          </div>
-          <div class="w-1/3 px-4 mb-12">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
-            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
-            Fugiat nam animi reprehenderit!
-          </div>
-          <div class="w-1/3 px-4 mb-12">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
-            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
-            Fugiat nam animi reprehenderit!
-          </div>
+          
+          <div v-else>
+            <ApolloQuery :query="query" :variables="{ id: selectedCategory }">
+              <template v-slot="{ result: { error, data }, isLoading }">
+                <div v-if="isLoading" class="loading apollo">Loading...</div>
+                <div v-else-if="error" class="error apollo">An error occurred</div>
+                <div v-else-if="data.category" class="flex flex-wrap">
+                  <div v-for="book in data.category.books" :key="book.id" class="w-1/3 px-4 mb-12">              
+                    <img :src="`${book.image}`" alt="cover image" class="h-64 mb-2" />  
+                    <router-link :to="`/books/${book.id}`" class="font-bold">
+                      {{ book.id }}. {{ book.title }}
+                    </router-link>
+                    <div>{{ book.author }}</div>
+                  </div>
+                </div>
+                <div v-else class="no-result apollo">No result :( </div>
+              </template>
+            </ApolloQuery>
+          </div>         
         </div>               
       </div>
     </div>
 
-    <div v-if="selectedCategory === 'all'">
-      <ApolloQuery :query="booksQuery">
-        <template v-slot="{ result: { error, data }, isLoading }">
-          <div v-if="isLoading" class="loading apollo">Loading...</div>       
-          <div v-else-if="error" class="error apollo">An error occurred</div>        
-          <div v-else-if="data">
-            <div v-for="book in data.books" :key="book.id">
-              <router-link :to="`/books/${book.id}`">
-                {{ book.id }}. {{ book.title }}
-              </router-link>
-              <div>{{ book.author }}</div>
-              <img :src="`${book.image}`" alt="cover image" />            
-            </div>
-          </div>        
-          <div v-else class="no-result apollo">No result :( </div>
-        </template>
-      </ApolloQuery>
-    </div>
-
-    <div v-else-if="selectedCategory === 'featured'">
-      <ApolloQuery :query="booksFeaturedQuery" :variables="{featured: true}">
-        <template v-slot="{ result: { error, data }, isLoading }">
-          <div v-if="isLoading" class="loading apollo">Loading...</div>       
-          <div v-else-if="error" class="error apollo">An error occurred</div>        
-          <div v-else-if="data">
-            <div v-for="book in data.booksByFeatured" :key="book.id">
-              <router-link :to="`/books/${book.id}`">
-                {{ book.id }}. {{ book.title }}
-              </router-link>
-              <div>{{ book.author }}</div>
-              <img :src="`${book.image}`" alt="cover image" />  
-            </div>
-          </div>        
-          <div v-else class="no-result apollo">No result :( </div>
-        </template>
-      </ApolloQuery>
-    </div>
     
-    <div v-else>
-      <ApolloQuery :query="query" :variables="{ id: selectedCategory }">
-        <template v-slot="{ result: { error, data }, isLoading }">
-          <div v-if="isLoading" class="loading apollo">Loading...</div>
-          <div v-else-if="error" class="error apollo">An error occurred</div>
-          <div v-else-if="data.category">
-            <div v-for="book in data.category.books" :key="book.id">
-              <router-link :to="`/books/${book.id}`">
-                {{ book.id }}. {{ book.title }}
-              </router-link>
-              <div>{{ book.author }}</div>
-              <img :src="`${book.image}`" alt="cover image" />  
-            </div>
-          </div>
-          <div v-else class="no-result apollo">No result :( </div>
-        </template>
-      </ApolloQuery>
-    </div>
     
 
   </div>
