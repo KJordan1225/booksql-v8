@@ -23,66 +23,72 @@
     <div class="container">
       <div class="flex flex-wrap -mx-4">
         <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-500 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-200 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-500 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-200 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-500 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-200 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-500 h-12"></div>
-        </div>
-        <div class="w-1/4 px-4 mb-12">
-          <div class="bg-gray-200 h-12"></div>
-        </div>
-      </div>
-    </div>
+          <ApolloQuery
+            :query="gql => gql`
+              query {
+              categories {
+                id
+                name
+              }
+            }
+            `"     
+          >
+            <template v-slot="{ result: { error, data }, isLoading }">
+              <!-- Loading -->
+              <div v-if="isLoading" class="loading apollo">Loading...</div>
 
-    <router-link to="/books/add">Add a Book</router-link>
-    <!-- <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/> --> 
-    <ApolloQuery
-      :query="gql => gql`
-        query {
-        categories {
-          id
-          name
-        }
-      }
-      `"     
-    >
-      <template v-slot="{ result: { error, data }, isLoading }">
-        <!-- Loading -->
-        <div v-if="isLoading" class="loading apollo">Loading...</div>
+              <!-- Error -->
+              <div v-else-if="error" class="error apollo">An error occurred</div>
 
-        <!-- Error -->
-        <div v-else-if="error" class="error apollo">An error occurred</div>
-
-        <!-- Result -->
-        <div v-else-if="data" class="category" >
-            <a href="#" class="link-margin" @click="selectCategory('all')">All</a>
-            <!-- <a href="#" class="link-margin" @click="selectCategory('featured')">Featured</a> -->
-            <a href="#" v-for="category in data.categories" 
-              :key="category.id" @click.prevent="selectCategory(category.id)" class="link-margin">
-              {{ category.id }}. {{ category.name }}
-            </a>
+              <!-- Result -->
+              <ul v-else-if="data" class="category list-reset text-lg" >
+                <li class="mb-6">
+                  <a href="#" class="text-black hover:text-gray-500" @click="selectCategory('all')">All</a>
+                </li>                  
+                  <!-- <a href="#" class="link-margin" @click="selectCategory('featured')">Featured</a> -->
+                  <li v-for="category in data.categories" 
+                    :key="category.id" class="mb-6">
+                    <a href="#" class="text-black hover:text-gray-500" @click.prevent="selectCategory(category.id)">{{ category.name }}</a> 
+                  </li>
+                  <li class="mb-6">
+                    <router-link to="/books/add" class="text-black hover:text-gray-500">Add a Book</router-link>
+                  </li>                
+              </ul>
+              <!-- No result -->
+              <div v-else class="no-result apollo">No result :( </div>
+            </template>
+          </ApolloQuery>
           
         </div>
-        <!-- No result -->
-        <div v-else class="no-result apollo">No result :( </div>
-      </template>
-    </ApolloQuery>
+        <div class="w-3/4 px-4 flex flex-wrap mb-12">
+          <div class="w-1/3 px-4 mb-12">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
+            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
+            Fugiat nam animi reprehenderit!
+          </div>
+          <div class="w-1/3 px-4 mb-12">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
+            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
+            Fugiat nam animi reprehenderit!
+          </div>
+          <div class="w-1/3 px-4 mb-12">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
+            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
+            Fugiat nam animi reprehenderit!
+          </div>
+          <div class="w-1/3 px-4 mb-12">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
+            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
+            Fugiat nam animi reprehenderit!
+          </div>
+          <div class="w-1/3 px-4 mb-12">
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Suscipit nihil, laborum iste 
+            quibusdam veritatis amet non omnis nisi quasi, ipsum repudiandae in, nam atque harum maxime. 
+            Fugiat nam animi reprehenderit!
+          </div>
+        </div>               
+      </div>
+    </div>
 
     <div v-if="selectedCategory === 'all'">
       <ApolloQuery :query="booksQuery">
