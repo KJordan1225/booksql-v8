@@ -2,7 +2,7 @@
   <div id="app" class="font-sans antialiased text-black">
     <div id="nav" class="bg-purple-800">
       <div class="container flex items-center justify-between py-6">
-        <div>
+        <div class="ml-10">
           <a href="/"><img src="./assets/logo.svg" alt="logo"></a>
         </div>
         <div>

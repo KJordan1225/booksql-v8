@@ -1,8 +1,8 @@
 <template>
   <div class="home">
     <div class="hero bg-gray-200 mb-24">
-      <div class="container flex justify-between py-10">
-        <div class="mt-10 m1-10">
+      <div class="container flex flex-col lg:flex-row lg:justify-between py-10 ml-10">
+        <div class="mt-10">
           <h1 class="text-xl font-bold">Book recommendation site with GraphQL</h1>
           <p class="mb-6">Built with Laravel (Lighthouse GraphQL), Vue.js (vue-apollo) and
              Tailwind CSS</p>
@@ -13,16 +13,16 @@
                 mr-4 hover:bg-purple-700 hover:text-white">View Screencasts</a>
              </div>
         </div>
-        <div>
+        <div class="mt-10 lg:mt-0">
           <img src="../assets/hero.svg" alt="hero"/>
         </div>
       </div>
     </div>
 
 
-    <div class="container">
-      <div class="flex flex-wrap -mx-4">
-        <div class="w-1/4 px-4 mb-12">
+    <div class="container mx-auto">
+      <div class="flex flex-wrap ml-10">
+        <div class="w-full lg:w-1/4 px-4 mb-12">
           <ApolloQuery
             :query="gql => gql`
               query {
@@ -60,17 +60,19 @@
           </ApolloQuery>
           
         </div>
-        <div class="w-3/4 px-4 flex flex-wrap mb-12">
+        <div class="w-full lg:w-3/4 px-4 flex flex-wrap mb-12">
           <div v-if="selectedCategory === 'all'">
             <ApolloQuery :query="booksQuery">
               <template v-slot="{ result: { error, data }, isLoading }">
                 <div v-if="isLoading" class="loading apollo">Loading...</div>       
                 <div v-else-if="error" class="error apollo">An error occurred</div>        
                 <div v-else-if="data" class="flex flex-wrap">
-                  <div v-for="book in data.books" :key="book.id" class="w-1/3 px-4 mb-12">              
+                  <div v-for="book in data.books" :key="book.id" class="w-full lg:w-1/3 px-4 mb-12">
+                    <router-link :to="`/books/${book.id}`">             
                     <img :src="`${book.image}`" alt="cover image" class="h-64 mb-2" />
-                    <router-link :to="`/books/${book.id}`" class="font-bold">
-                      {{ book.id }}. {{ book.title }}
+                    </router-link> 
+                    <router-link :to="`/books/${book.id}`" class="font-bold text-black hover:text-gray-400">
+                        {{ book.title }}
                     </router-link>
                     <div>{{ book.author }}</div>            
                   </div>
@@ -88,7 +90,7 @@
                 <div v-else-if="data">
                   <div v-for="book in data.booksByFeatured" :key="book.id">
                     <router-link :to="`/books/${book.id}`">
-                      {{ book.id }}. {{ book.title }}
+                      {{ book.title }}
                     </router-link>
                     <div>{{ book.author }}</div>
                     <img :src="`${book.image}`" alt="cover image" />  
@@ -105,10 +107,12 @@
                 <div v-if="isLoading" class="loading apollo">Loading...</div>
                 <div v-else-if="error" class="error apollo">An error occurred</div>
                 <div v-else-if="data.category" class="flex flex-wrap">
-                  <div v-for="book in data.category.books" :key="book.id" class="w-1/3 px-4 mb-12">              
-                    <img :src="`${book.image}`" alt="cover image" class="h-64 mb-2" />  
-                    <router-link :to="`/books/${book.id}`" class="font-bold">
-                      {{ book.id }}. {{ book.title }}
+                  <div v-for="book in data.category.books" :key="book.id" class="w-full lg:w-1/3 px-4 mb-12">              
+                    <router-link :to="`/books/${book.id}`">
+                    <img :src="`${book.image}`" alt="cover image" class="h-64 mb-2" /> 
+                    </router-link> 
+                    <router-link :to="`/books/${book.id}`" class="font-bold text-black hover:text-gray-400">
+                      {{ book.title }}
                     </router-link>
                     <div>{{ book.author }}</div>
                   </div>
