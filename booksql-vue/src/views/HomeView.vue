@@ -1,5 +1,54 @@
 <template>
   <div class="home">
+    <div class="hero bg-gray-200 mb-24">
+      <div class="container flex justify-between py-10">
+        <div class="mt-10 m1-10">
+          <h1 class="text-xl font-bold">Book recommendation site with GraphQL</h1>
+          <p class="mb-6">Built with Laravel (Lighthouse GraphQL), Vue.js (vue-apollo) and
+             Tailwind CSS</p>
+             <div class="flex items-center">
+                <a href="#" class="bg-purple-700 text-white rounded px-4 py-4 
+                mr-4 hover:bg-purple-500">View Books</a>
+                <a href="#" class="border border-purple-700 border-solid text-purple-700 rounded px-4 py-4 
+                mr-4 hover:bg-purple-700 hover:text-white">View Screencasts</a>
+             </div>
+        </div>
+        <div>
+          <img src="../assets/hero.svg" alt="hero"/>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container">
+      <div class="flex flex-wrap -mx-4">
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-500 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-200 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-500 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-200 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-500 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-200 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-500 h-12"></div>
+        </div>
+        <div class="w-1/4 px-4 mb-12">
+          <div class="bg-gray-200 h-12"></div>
+        </div>
+      </div>
+    </div>
+
     <router-link to="/books/add">Add a Book</router-link>
     <!-- <img alt="Vue logo" src="../assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> --> 
